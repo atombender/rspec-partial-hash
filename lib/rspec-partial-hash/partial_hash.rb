@@ -21,8 +21,10 @@ PartialHashMatcher = Class.new {
 RSpec::Matchers.define :include_partial_hash do |expected|
 
   match do |actual|
-    raise ArgumentError, "Expectation not a hash" unless
-      expected.respond_to?(:to_h) or expected.is_a?(Hash)
+    if expected
+      raise ArgumentError, "Expectation not a hash" unless
+        (expected.respond_to?(:to_h) or expected.is_a?(Hash)) and expected.respond_to?(:keys)
+    end
     !actual.nil? && !expected.nil? && PartialHashMatcher.partial_match?(expected, actual)
   end
 
